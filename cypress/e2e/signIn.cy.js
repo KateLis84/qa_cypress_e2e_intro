@@ -10,6 +10,7 @@ describe('Sign In page', () => {
     cy.visit('');
 
     username = `${faker.string.alpha({ length: 8, casing: 'lower' })}${faker.number.int({ min: 1000, max: 9999 })}`;
+    email = faker.internet.email();
     password = faker.internet.password({ length: 12 });
   });
 
