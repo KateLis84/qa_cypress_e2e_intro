@@ -2,28 +2,30 @@
 import { faker } from '@faker-js/faker';
 
 describe('Sign In page', () => {
+  let username;
+  let email;
+  let password;
+
   beforeEach(() => {
     cy.visit('');
+
+    username = faker.internet.userName().replace('.', '');
+    email = faker.internet.email();
+    password = faker.internet.password();
   });
 
-  const username = faker.internet.userName().replace('.', '');
-  const email = faker.internet.email();
-  const password = faker.internet.password();
-
-  it('should register and login then', () => {
+  it('should sign in with valid credentials', () => {
     cy.request('POST', '/api/users/', {
-      user: {
-        username,
-        email,
-        password
-      }
+      user: { username, email, password }
     }).its('status').should('eq', 200);
 
-    cy.get(':nth-child(2) > .nav-link').click();
+    cy.contains('.nav-link', 'Sign in').click();
 
     cy.get('input[placeholder="Email"]').type(email);
     cy.get('input[placeholder="Password"]').type(password);
 
-    cy.get('.btn-primary').click();
+    cy.get('button[type="submit"]').click();
+
+    cy.get('.navbar').should('contain.text', username);
   });
 });
