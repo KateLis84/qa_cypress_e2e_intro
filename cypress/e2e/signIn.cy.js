@@ -9,23 +9,24 @@ describe('Sign In page', () => {
   beforeEach(() => {
     cy.visit('');
 
-    username = faker.internet.userName().replace('.', '');
-    email = faker.internet.email();
-    password = faker.internet.password();
+    username = `${faker.string.alpha({ length: 8, casing: 'lower' })}${faker.number.int({ min: 1000, max: 9999 })}`;
+    password = faker.internet.password({ length: 12 });
   });
 
   it('should sign in with valid credentials', () => {
-    cy.request('POST', '/api/users/', {
+    cy.request('POST', '/api/users', {
       user: { username, email, password }
-    }).its('status').should('eq', 200);
+    })
+      .its('status')
+      .should('eq', 200);
 
     cy.contains('.nav-link', 'Sign in').click();
 
-    cy.get('input[placeholder="Email"]').type(email);
-    cy.get('input[placeholder="Password"]').type(password);
+    cy.get('input[type="email"]').type(email);
+    cy.get('input[type="password"]').type(password);
 
     cy.get('button[type="submit"]').click();
 
-    cy.get('.navbar').should('contain.text', username);
+    cy.get('.nav-link').contains(username).should('be.visible');
   });
 });
